@@ -20,6 +20,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         self.window = UIWindow(windowScene: windowScene)
         let navigate = UINavigationController(rootViewController: ViewController())
+        navigate.navigationBar.backgroundColor = .black
+        navigate.navigationBar.isTranslucent = false
+        navigate.navigationBar.topItem?.title = "COUNTRIES"
+        navigate.interactivePopGestureRecognizer?.isEnabled = false
         self.window?.rootViewController = navigate
         self.window?.makeKeyAndVisible()
     }
