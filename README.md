@@ -2,8 +2,8 @@
 Exam
 
 
-STARTED THE EXAM: March 17, 9am (Date of when the repository is created)
-ENDED THE EXAM: March 18, 1:30pm
+STARTED THE EXAM: March 18, 9am (Date of when the repository is created)
+ENDED THE EXAM: March 19, 1:30pm
 
 Materials or functions summary
 
