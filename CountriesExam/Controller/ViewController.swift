@@ -20,23 +20,21 @@ class ViewController: UITableViewController {
         resultTable.tableView.delegate = self
         let controller = UISearchController(searchResultsController: resultTable)
         controller.loadViewIfNeeded()
-//        controller.obscuresBackgroundDuringPresentation = false
         controller.hidesNavigationBarDuringPresentation = false
         controller.searchBar.delegate = self
         controller.searchResultsUpdater = self
         controller.delegate = self
         controller.view.backgroundColor = .white
-//        controller.automaticallyShowsSearchResultsController = false
         return controller
     }()
     
-    var searchLabel: UILabel = {
+    var upperLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Search for a country"
-        label.font = .boldSystemFont(ofSize: 15)
+        label.text = "Search for countries"
+        label.font = .boldSystemFont(ofSize: 25)
         label.textColor = .gray
-        label.isHidden = true
+        label.isUserInteractionEnabled = false
         return label
     }()
     
@@ -46,50 +44,38 @@ class ViewController: UITableViewController {
         navBar.topItem?.hidesSearchBarWhenScrolling = false
         navBar.topItem?.searchController = self.searchController
         
-        apiService.getCountries { [weak self] (result) in
-            switch result {
-            case .success(let data):
-                self?.countriesData = data
-            case .failure(let err):
-            print(err)
-            }
-            
-            DispatchQueue.main.async {
-                self?.tableView.reloadData()
+        if (self.countriesData.isEmpty) {
+            apiService.getCountries {(result) in
+                switch result {
+                case .success(let data):
+                    self.countriesData = data
+                case .failure(let err):
+                print(err)
+                }
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                }
             }
         }
         
         super.viewWillAppear(animated)
+        
     }
 
     override func viewWillDisappear(_ animated: Bool) {
-        
-//        if (self.searchController.isActive) {
-//            self.searchController.dismiss(animated: false) {
-//                self.isSearching = false
-//                self.searchController.searchBar.text?.removeAll()
-//                self.filterData.removeAll()
-//                self.tableView.reloadData()
-//            }
-//        }else {
-//
-//        }
         super.viewWillDisappear(animated)
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
-        
-        tableView.register(CountriesCell.self, forCellReuseIdentifier: cellID)
         
         view.backgroundColor = .white
-//        searchController.view.addSubview(searchLabel)
-//        NSLayoutConstraint.activate([
-//            searchLabel.centerXAnchor.constraint(equalTo: searchController.view.centerXAnchor, constant: 0),
-//            searchLabel.topAnchor.constraint(equalTo: searchController.view.topAnchor, constant: 20)
-//        ])
-        
+        tableView.register(CountriesCell.self, forCellReuseIdentifier: cellID)
+        searchController.view.insertSubview(upperLabel, at: 1)
+        NSLayoutConstraint.activate([
+            upperLabel.topAnchor.constraint(equalTo: searchController.view.safeAreaLayoutGuide.topAnchor, constant: 20),
+            upperLabel.centerXAnchor.constraint(equalTo: searchController.view.centerXAnchor, constant: 0)
+        ])
         
         self.definesPresentationContext = true
     }
@@ -101,12 +87,9 @@ class ViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath) as! CountriesCell
         
-            let countries = self.countriesData[indexPath.row]
+        let countries = self.countriesData[indexPath.row]
+        cell.setCellValues(countries)
             
-            DispatchQueue.main.async {
-                cell.setCellValues(countries)
-            }
-        
         return cell
     }
     
@@ -154,83 +137,44 @@ extension ViewController: UISearchBarDelegate, UISearchResultsUpdating, UISearch
         let searchResults = countriesData
         
         let filteredResults = searchResults.filter { (countries) -> Bool in
-            countries.name.lowercased().contains(searchText.lowercased())
+            countries.name.lowercased().contains(searchText.lowercased()) ||
+                countries.alpha2Code.elementsEqual(searchText) ||
+                countries.alpha3Code.elementsEqual(searchText)
         }
-        
         
         if let resultsController = searchController.searchResultsController as? SearchResultController {
             resultsController.filteredData = filteredResults
             resultsController.resultsLabel.isHidden = true
-            resultsController.tableView.isHidden = false
-            resultsController.tableView.reloadData()
             
-
-            
-            if (resultsController.filteredData.count == 0) {
+            if (resultsController.filteredData.isEmpty && filteredResults.isEmpty) {
                 resultsController.resultsLabel.isHidden = false
-                resultsController.tableView.isHidden = true
+                resultsController.resultsLabel.text = "No results found for \(searchText)"
             }
             
+            resultsController.tableView.reloadData()
         }
-        
-//        let searchText = searchController.searchBar.text!
-//        if !searchText.isEmpty {
-//
-//            self.isSearching = true
-//            filterData.removeAll()
-//
-//            for country in countriesData {
-//                if (country.name!.lowercased().contains(searchText.lowercased()) || country.alpha2Code!.elementsEqual(searchText) || country.alpha3Code!.elementsEqual(searchText)) {
-//                    filterData.removeAll()
-//                    filterData.append(country)
-//                }else {
-//                }
-////                 if (country.name!.lowercased().contains(searchText.lowercased())) {
-////                    filterData.removeAll()
-////                    filterData.append(country)
-////                }else if (searchText.contains(country.alpha2Code) || searchText.contains(country.alpha3Code)) {
-////                    filterData.removeAll()
-////                    filterData.append(country)
-////                }
-//
-//            }
-//        }else {
-//            self.isSearching = false
-//            self.filterData.removeAll()
-//            self.filterData = self.countriesData
-//        }
-//
-//        DispatchQueue.main.async {
-//            self.tableView.reloadData()
-//        }
         
     }
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         searchBar.resignFirstResponder()
-//        let searchText = searchController.searchBar.text!
-//        if !searchText.isEmpty {
-//
-//            self.isSearching = true
-//            filterData.removeAll()
-//
-//            for country in countriesData {
-////                if (country.name!.lowercased().contains(searchText.lowercased()) || country.alpha2Code!.contains(searchText) || country.alpha3Code!.contains(searchText)) {
-////                    filterData.append(country)
-////                }
-//
-//                if (country.alpha2Code!.contains(searchText) || country.alpha3Code!.contains(searchText)) {
-//                    filterData.append(country)
-//                }
-//
-//            }
-//        }else {
-//            self.isSearching = false
-//            self.filterData.removeAll()
-//            self.filterData = self.countriesData
-//        }
-//
-//        self.tableView.reloadData()
+    }
+    
+    func willPresentSearchController(_ searchController: UISearchController) {
+        self.tableView.isHidden = true
+    }
+    
+    func willDismissSearchController(_ searchController: UISearchController) {
+        self.tableView.isHidden = false
+    }
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        
+        if searchText.isEmpty {
+            self.upperLabel.isHidden = false
+        }else {
+            self.upperLabel.isHidden = true
+        }
     }
     
 }

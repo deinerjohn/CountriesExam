@@ -21,13 +21,11 @@ class APIService {
             // Handle Error
             if let error = error {
                 completion(.failure(error))
-                print("DataTask error: \(error.localizedDescription)")
+                print(error.localizedDescription)
                 return
             }
             
             guard let response = response as? HTTPURLResponse else {
-                // Handle Empty Response
-                print("Empty Response")
                 return
             }
             print("Response status code for firstcell: \(response.statusCode)")

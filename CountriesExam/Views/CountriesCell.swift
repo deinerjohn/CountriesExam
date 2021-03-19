@@ -19,13 +19,11 @@ class CountriesCell: UITableViewCell {
         return view
     }()
     
-    let countryFlag: UIImageView = {
+    var countryFlag: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.clipsToBounds = true
-        imageView.contentMode = .scaleAspectFill
-        imageView.layer.borderWidth = 1
-        imageView.layer.borderColor = UIColor.gray.cgColor
+        imageView.contentMode = .scaleAspectFit
         return imageView
     }()
     
@@ -101,17 +99,22 @@ class CountriesCell: UITableViewCell {
     func updateView(country: String?, cioc: String?, flag: String?) {
         self.countryName.text = country
         self.countryCIOC.text = cioc
-        self.downloadImage(urlString: flag!)
+        guard let flag = flag else {return}
+        self.downloadImage(urlString: flag)
+        
     }
     
     private func downloadImage(urlString: String) {
         imageUrlString = urlString
         guard let url = URL(string: urlString) else { return }
-        self.countryFlag.image = nil
-        if let imageFromCache = imageCache.object(forKey: urlString as NSString) {
-            self.countryFlag.image = imageFromCache
-            return
+        DispatchQueue.main.async {
+            self.countryFlag.image = nil
+            if let imageFromCache = self.imageCache.object(forKey: urlString as NSString) {
+                self.countryFlag.image = imageFromCache
+                return
+            }
         }
+
         URLSession.shared.dataTask(with: url) { (data, response, error) in
             if let error = error {
                 print("DataTask error: \(error.localizedDescription)")
@@ -122,13 +125,14 @@ class CountriesCell: UITableViewCell {
                 return
             }
             
-            DispatchQueue.main.async {
-                guard let imageToCache: SVGKImage = SVGKImage(data: data) else { return }
-                if self.imageUrlString == urlString {
+            guard let imageToCache = SVGKImage(data: data) else { return }
+            if self.imageUrlString == urlString {
+                DispatchQueue.main.async {
                     self.countryFlag.image = imageToCache.uiImage
+                    self.imageCache.setObject(imageToCache.uiImage, forKey: urlString as NSString)
                 }
-                self.imageCache.setObject(imageToCache.uiImage, forKey: urlString as NSString)
             }
+            
             
         }.resume()
     }

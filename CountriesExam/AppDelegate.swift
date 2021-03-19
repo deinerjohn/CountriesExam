@@ -7,13 +7,24 @@
 
 import UIKit
 
+@available(iOS 13.0, *)
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
-
-
+    
+    var window: UIWindow?
+    
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        self.window = UIWindow(frame: UIScreen.main.bounds)
+        let navigate = UINavigationController(rootViewController: ViewController())
+        navigate.navigationBar.backgroundColor = .black
+        navigate.navigationBar.isTranslucent = false
+        navigate.navigationBar.topItem?.title = "COUNTRIES"
+        navigate.interactivePopGestureRecognizer?.isEnabled = false
+        self.window?.rootViewController = navigate
+        self.window?.makeKeyAndVisible()
+        
         return true
     }
 

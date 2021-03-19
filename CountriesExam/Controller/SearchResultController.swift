@@ -16,10 +16,10 @@ class SearchResultController: UIViewController, UITableViewDataSource {
     var resultsLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "SAMPLE"
         label.font = .boldSystemFont(ofSize: 25)
-        label.textColor = .black
+        label.textColor = .gray
         label.isHidden = true
+        label.isUserInteractionEnabled = false
         return label
     }()
     
@@ -29,7 +29,7 @@ class SearchResultController: UIViewController, UITableViewDataSource {
         view.register(CountriesCell.self, forCellReuseIdentifier: cellID)
         view.dataSource = self
         view.backgroundColor = .white
-        view.isHidden = true
+        view.isMultipleTouchEnabled = false
         return view
     }()
     
@@ -38,12 +38,6 @@ class SearchResultController: UIViewController, UITableViewDataSource {
         
         view.backgroundColor = .white
         
-        view.addSubview(resultsLabel)
-        NSLayoutConstraint.activate([
-            resultsLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 0),
-            resultsLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 20)
-        ])
-        
         view.addSubview(tableView)
         NSLayoutConstraint.activate([
             tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0),
@@ -51,6 +45,13 @@ class SearchResultController: UIViewController, UITableViewDataSource {
             tableView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: 0),
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0)
         ])
+        
+        tableView.addSubview(resultsLabel)
+        NSLayoutConstraint.activate([
+            resultsLabel.topAnchor.constraint(equalTo: tableView.safeAreaLayoutGuide.topAnchor, constant: 15),
+            resultsLabel.centerXAnchor.constraint(equalTo: tableView.centerXAnchor, constant: 0)
+        ])
+        
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -62,10 +63,7 @@ class SearchResultController: UIViewController, UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath) as! CountriesCell
         
         let filteredData = self.filteredData[indexPath.row]
-        DispatchQueue.main.async {
-            cell.setCellValues(filteredData)
-        }
-      
+        cell.setCellValues(filteredData)
         return cell
     }
     

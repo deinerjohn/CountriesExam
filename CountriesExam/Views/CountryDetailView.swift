@@ -59,14 +59,17 @@ class CountryDetailView: UIViewController {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textColor = .black
-        label.text = "Population: " + String(populationVal)
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.maximumFractionDigits = 0
+        let result = formatter.string(from: NSNumber(value: populationVal))
+        label.text = "Population: " + result!
         label.font = .boldSystemFont(ofSize: 15)
         label.adjustsFontSizeToFitWidth = true
         return label
     }()
     
     override func viewWillAppear(_ animated: Bool) {
-        guard let navBar = self.navigationController?.navigationBar else {return}
         super.viewWillAppear(animated)
     }
     
