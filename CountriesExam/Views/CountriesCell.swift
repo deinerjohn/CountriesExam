@@ -8,8 +8,34 @@
 import Foundation
 import UIKit
 import SVGKit
+import SDWebImage
+import SDWebImageSVGKitPlugin
 
 class CountriesCell: UITableViewCell {
+    
+    var data: Countries? {
+        didSet {
+            self.countryName.text = data?.name
+            self.countryCIOC.text = data?.cioc
+            self.setupImageFlag()
+        }
+    }
+    
+    func setupImageFlag() {
+        if let profileImageUrl = data?.flag {
+//            countryFlag.downloadSVG(urlString: profileImageUrl)
+//
+            let svgCoder = SDImageSVGKCoder.shared
+            SDImageCodersManager.shared.addCoder(svgCoder)
+
+            let url = URL(string: profileImageUrl)!
+
+            let svgImageSize = CGSize(width: 50, height: 50)
+            countryFlag.sd_setImage(with: url, placeholderImage: UIImage(named: "noImage"), options: [], context: [.imageThumbnailPixelSize : svgImageSize])
+            
+        }
+        
+    }
     
     let chevronAcce: UIImageView = {
         let view = UIImageView()
@@ -19,11 +45,10 @@ class CountriesCell: UITableViewCell {
         return view
     }()
     
-    var countryFlag: UIImageView = {
-        let imageView = UIImageView()
+    var countryFlag: SVGKFastImageView = {
+        let imageView = SVGKFastImageView.init(svgkImage: nil)!
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.clipsToBounds = true
-        imageView.contentMode = .scaleAspectFit
         return imageView
     }()
     
@@ -92,49 +117,17 @@ class CountriesCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setCellValues(_ countries: Countries) {
-        self.updateView(country: countries.name, cioc: countries.cioc, flag: countries.flag)
-    }
-    
-    func updateView(country: String?, cioc: String?, flag: String?) {
-        self.countryName.text = country
-        self.countryCIOC.text = cioc
-        guard let flag = flag else {return}
-        self.downloadImage(urlString: flag)
-        
-    }
-    
-    private func downloadImage(urlString: String) {
-        imageUrlString = urlString
-        guard let url = URL(string: urlString) else { return }
-        DispatchQueue.main.async {
-            self.countryFlag.image = nil
-            if let imageFromCache = self.imageCache.object(forKey: urlString as NSString) {
-                self.countryFlag.image = imageFromCache
-                return
-            }
-        }
-
-        URLSession.shared.dataTask(with: url) { (data, response, error) in
-            if let error = error {
-                print("DataTask error: \(error.localizedDescription)")
-                return
-            }
-            guard let data = data else {
-                print("Empty Data")
-                return
-            }
-            
-            guard let imageToCache = SVGKImage(data: data) else { return }
-            if self.imageUrlString == urlString {
-                DispatchQueue.main.async {
-                    self.countryFlag.image = imageToCache.uiImage
-                    self.imageCache.setObject(imageToCache.uiImage, forKey: urlString as NSString)
-                }
-            }
-            
-            
-        }.resume()
-    }
+//    func setCellValues(_ countries: Countries) {
+//        self.updateView(country: countries.name, cioc: countries.cioc, flag: countries.flag)
+//    }
+//
+//    func updateView(country: String?, cioc: String?, flag: String?) {
+//        self.countryName.text = country
+//        self.countryCIOC.text = cioc
+//        guard let flag = flag else {return}
+//
+//        countryFlag.downloadSVG(urlString: flag)
+//
+//    }
     
 }

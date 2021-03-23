@@ -63,7 +63,11 @@ class SearchResultController: UIViewController, UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath) as! CountriesCell
         
         let filteredData = self.filteredData[indexPath.row]
-        cell.setCellValues(filteredData)
+        
+        DispatchQueue.main.async {
+            cell.data = filteredData
+        }
+        
         return cell
     }
     

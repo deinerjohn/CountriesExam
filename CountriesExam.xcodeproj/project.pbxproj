@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E0B547DF26099F900091C7D3 /* CustomSVGView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0B547DE26099F900091C7D3 /* CustomSVGView.swift */; };
 		E0BF52852602D9D40083CA2E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0BF52842602D9D40083CA2E /* AppDelegate.swift */; };
 		E0BF52872602D9D40083CA2E /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0BF52862602D9D40083CA2E /* SceneDelegate.swift */; };
 		E0BF52892602D9D40083CA2E /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0BF52882602D9D40083CA2E /* ViewController.swift */; };
@@ -25,6 +26,7 @@
 		13390FFCF1A6278FBAFF9A08 /* Pods_CountriesExam.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CountriesExam.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A7F586190FB4B1F97D7E0EAA /* Pods-CountriesExam.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CountriesExam.release.xcconfig"; path = "Target Support Files/Pods-CountriesExam/Pods-CountriesExam.release.xcconfig"; sourceTree = "<group>"; };
 		CC2D84BA0A91FACAFC483884 /* Pods-CountriesExam.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CountriesExam.debug.xcconfig"; path = "Target Support Files/Pods-CountriesExam/Pods-CountriesExam.debug.xcconfig"; sourceTree = "<group>"; };
+		E0B547DE26099F900091C7D3 /* CustomSVGView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomSVGView.swift; sourceTree = "<group>"; };
 		E0BF52812602D9D40083CA2E /* CountriesExam.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CountriesExam.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E0BF52842602D9D40083CA2E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E0BF52862602D9D40083CA2E /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -90,6 +92,7 @@
 				E0BF528D2602D9D60083CA2E /* Assets.xcassets */,
 				E0BF528F2602D9D60083CA2E /* LaunchScreen.storyboard */,
 				E0BF52922602D9D60083CA2E /* Info.plist */,
+				E0B547DE26099F900091C7D3 /* CustomSVGView.swift */,
 			);
 			path = CountriesExam;
 			sourceTree = "<group>";
@@ -245,6 +248,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E0BF52BE26034DBA0083CA2E /* SearchResultController.swift in Sources */,
+				E0B547DF26099F900091C7D3 /* CustomSVGView.swift in Sources */,
 				E0BF529F2602DFED0083CA2E /* Model.swift in Sources */,
 				E0BF52892602D9D40083CA2E /* ViewController.swift in Sources */,
 				E0BF52AF26030D130083CA2E /* CountriesCell.swift in Sources */,

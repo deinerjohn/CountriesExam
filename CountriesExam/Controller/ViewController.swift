@@ -19,7 +19,7 @@ class ViewController: UITableViewController {
         resultTable = SearchResultController()
         resultTable.tableView.delegate = self
         let controller = UISearchController(searchResultsController: resultTable)
-        controller.loadViewIfNeeded()
+//        controller.loadViewIfNeeded()
         controller.hidesNavigationBarDuringPresentation = false
         controller.searchBar.delegate = self
         controller.searchResultsUpdater = self
@@ -44,20 +44,6 @@ class ViewController: UITableViewController {
         navBar.topItem?.hidesSearchBarWhenScrolling = false
         navBar.topItem?.searchController = self.searchController
         
-        if (self.countriesData.isEmpty) {
-            apiService.getCountries {(result) in
-                switch result {
-                case .success(let data):
-                    self.countriesData = data
-                case .failure(let err):
-                print(err)
-                }
-                DispatchQueue.main.async {
-                    self.tableView.reloadData()
-                }
-            }
-        }
-        
         super.viewWillAppear(animated)
         
     }
@@ -68,6 +54,20 @@ class ViewController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        if (self.countriesData.isEmpty) {
+            apiService.getCountries { [weak self](result) in
+                switch result {
+                case .success(let data):
+                    self?.countriesData = data
+                case .failure(let err):
+                print(err)
+                }
+                DispatchQueue.main.async {
+                    self?.tableView.reloadData()
+                }
+            }
+        }
         
         view.backgroundColor = .white
         tableView.register(CountriesCell.self, forCellReuseIdentifier: cellID)
@@ -88,8 +88,11 @@ class ViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath) as! CountriesCell
         
         let countries = self.countriesData[indexPath.row]
-        cell.setCellValues(countries)
-            
+        
+        DispatchQueue.main.async {
+            cell.data = countries
+        }
+        
         return cell
     }
     
@@ -102,14 +105,16 @@ class ViewController: UITableViewController {
             let countries = self.countriesData[indexPath.row]
 
             if let cell = tableView.cellForRow(at: indexPath) as? CountriesCell {
-                guard let image = cell.countryFlag.image else {return}
+                guard let image = cell.countryFlag.image.uiImage else {return}
+//                guard let image = cell.countryFlag.image else {return}
                 self.navigateToDetailScreen(countryName: countries.name, capital: countries.capital, alphaCode: countries.alpha2Code + "," + countries.alpha3Code, population: countries.population, countryFlag: image)
             }
         }else {
             let filteredData = self.resultTable.filteredData[indexPath.row]
 
             if let cell = tableView.cellForRow(at: indexPath) as? CountriesCell {
-                guard let image = cell.countryFlag.image else {return}
+                guard let image = cell.countryFlag.image.uiImage else {return}
+//                guard let image = cell.countryFlag.image else {return}
                 self.navigateToDetailScreen(countryName: filteredData.name, capital: filteredData.capital, alphaCode: filteredData.alpha2Code + "," + filteredData.alpha3Code, population: filteredData.population, countryFlag: image)
             }
         }

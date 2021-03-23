@@ -21,8 +21,8 @@ class CountryDetailView: UIViewController {
         return label
     }()
     
-    var countryFlag: UIImageView = {
-        let imageView = UIImageView()
+    var countryFlag: CustomSVGView = {
+        let imageView = CustomSVGView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.clipsToBounds = true
         imageView.contentMode = .scaleAspectFill
