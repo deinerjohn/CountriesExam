@@ -21,6 +21,7 @@ class CustomSVGView: UIImageView {
         guard let url = URL(string: urlString) else { return }
         
         image = nil
+        self.layer.sublayers = nil
         
         if let imageFromCache = imageCache.object(forKey: urlString as NSString) {
             self.image = imageFromCache
@@ -38,6 +39,7 @@ class CustomSVGView: UIImageView {
                 guard let data = data else {return}
                 
                 print("eto data sa image",data)
+//                guard let receivedImage: SVGKImage = SVGKImage(data: data) else {return}
                 guard let receivedImage: SVGKImage = SVGKImage(data: data) else {return}
 //                let image = receivedImage.uiImage
 //                self.image = image

@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import WebKit
 
 class ViewController: UITableViewController {
     
@@ -105,31 +106,43 @@ class ViewController: UITableViewController {
             let countries = self.countriesData[indexPath.row]
 
             if let cell = tableView.cellForRow(at: indexPath) as? CountriesCell {
-                guard let image = cell.countryFlag.image.uiImage else {return}
+//                guard let image = cell.countryFlag.image.uiImage else {return}
 //                guard let image = cell.countryFlag.image else {return}
-                self.navigateToDetailScreen(countryName: countries.name, capital: countries.capital, alphaCode: countries.alpha2Code + "," + countries.alpha3Code, population: countries.population, countryFlag: image)
+                self.navigateToDetailScreen(countryName: countries.name, capital: countries.capital, alphaCode: countries.alpha2Code + "," + countries.alpha3Code, population: countries.population, countryFlag: countries.flag)
             }
         }else {
             let filteredData = self.resultTable.filteredData[indexPath.row]
 
             if let cell = tableView.cellForRow(at: indexPath) as? CountriesCell {
-                guard let image = cell.countryFlag.image.uiImage else {return}
+//                guard let image = cell.countryFlag.image.uiImage else {return}
 //                guard let image = cell.countryFlag.image else {return}
-                self.navigateToDetailScreen(countryName: filteredData.name, capital: filteredData.capital, alphaCode: filteredData.alpha2Code + "," + filteredData.alpha3Code, population: filteredData.population, countryFlag: image)
+                self.navigateToDetailScreen(countryName: filteredData.name, capital: filteredData.capital, alphaCode: filteredData.alpha2Code + "," + filteredData.alpha3Code, population: filteredData.population, countryFlag: filteredData.flag)
             }
         }
         
         tableView.deselectRow(at: indexPath, animated: false)
     }
     
-    func navigateToDetailScreen(countryName: String, capital: String, alphaCode: String, population: Int, countryFlag: UIImage) {
+//    func navigateToDetailScreen(countryName: String, capital: String, alphaCode: String, population: Int, countryFlag: UIImage) {
+//        let view = CountryDetailView()
+//        view.modalPresentationStyle = .fullScreen
+//        view.countryName.text = countryName
+//        view.capitalVal = capital
+//        view.alphaCodeVal = alphaCode
+//        view.populationVal = population
+//        view.countryFlag.image = countryFlag
+//        guard let navBar = self.navigationController else {return}
+//        navBar.pushViewController(view, animated: true)
+//    }
+    
+    func navigateToDetailScreen(countryName: String, capital: String, alphaCode: String, population: Int, countryFlag: String) {
         let view = CountryDetailView()
         view.modalPresentationStyle = .fullScreen
         view.countryName.text = countryName
         view.capitalVal = capital
         view.alphaCodeVal = alphaCode
         view.populationVal = population
-        view.countryFlag.image = countryFlag
+        view.svgURL = countryFlag
         guard let navBar = self.navigationController else {return}
         navBar.pushViewController(view, animated: true)
     }

@@ -8,6 +8,8 @@ target 'CountriesExam' do
   # Pods for CountriesExam
 
 	pod 'SVGKit'
+	pod 'SDWebImage'
 	#pod 'SDWebImageSVGCoder'
+	pod 'SwiftSVG'
 	pod 'SDWebImageSVGKitPlugin'
 end

@@ -10,6 +10,7 @@ import UIKit
 import SVGKit
 import SDWebImage
 import SDWebImageSVGKitPlugin
+import WebKit
 
 class CountriesCell: UITableViewCell {
     
@@ -24,14 +25,17 @@ class CountriesCell: UITableViewCell {
     func setupImageFlag() {
         if let profileImageUrl = data?.flag {
 //            countryFlag.downloadSVG(urlString: profileImageUrl)
+
+//            let svgCoder = SDImageSVGKCoder.shared
+//            SDImageCodersManager.shared.addCoder(svgCoder)
+////
+//            let url = URL(string: profileImageUrl)!
 //
-            let svgCoder = SDImageSVGKCoder.shared
-            SDImageCodersManager.shared.addCoder(svgCoder)
-
+//            let svgImageSize = CGSize(width: 100, height: 100)
+//            self.countryFlag.sd_setImage(with: url, placeholderImage: UIImage(named: "noImage"), options: [.scaleDownLargeImages], context: [.imageThumbnailPixelSize : svgImageSize])
             let url = URL(string: profileImageUrl)!
-
-            let svgImageSize = CGSize(width: 50, height: 50)
-            countryFlag.sd_setImage(with: url, placeholderImage: UIImage(named: "noImage"), options: [], context: [.imageThumbnailPixelSize : svgImageSize])
+            let request = URLRequest(url: url)
+            self.countryFlag.load(request)
             
         }
         
@@ -45,12 +49,25 @@ class CountriesCell: UITableViewCell {
         return view
     }()
     
-    var countryFlag: SVGKFastImageView = {
-        let imageView = SVGKFastImageView.init(svgkImage: nil)!
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.clipsToBounds = true
-        return imageView
+    let countryFlag: WKWebView = {
+        let preferences = WKPreferences()
+        preferences.javaScriptEnabled = false
+        let configuration = WKWebViewConfiguration()
+        configuration.preferences = preferences
+        let wv = WKWebView(frame: .zero, configuration: configuration)
+        wv.translatesAutoresizingMaskIntoConstraints = false
+        wv.clipsToBounds = true
+        wv.scrollView.isScrollEnabled = false
+        wv.isUserInteractionEnabled = false
+        return wv
     }()
+    
+//    var countryFlag: UIImageView = {
+//        let imageView = UIImageView()
+//        imageView.translatesAutoresizingMaskIntoConstraints = false
+//        imageView.clipsToBounds = true
+//        return imageView
+//    }()
     
     var imageUrlString: String?
     let imageCache = NSCache<NSString, UIImage>()
@@ -90,6 +107,14 @@ class CountriesCell: UITableViewCell {
             chevronAcce.heightAnchor.constraint(equalToConstant: 15)
         ])
         
+//        addSubview(countryFlag)
+//        NSLayoutConstraint.activate([
+//            countryFlag.widthAnchor.constraint(equalToConstant: bounds.width / 4),
+//            countryFlag.topAnchor.constraint(equalTo: topAnchor, constant: 15),
+//            countryFlag.leftAnchor.constraint(equalTo: leftAnchor, constant: 20),
+//            countryFlag.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -15)
+//        ])
+        
         addSubview(countryFlag)
         NSLayoutConstraint.activate([
             countryFlag.widthAnchor.constraint(equalToConstant: bounds.width / 4),
@@ -97,6 +122,7 @@ class CountriesCell: UITableViewCell {
             countryFlag.leftAnchor.constraint(equalTo: leftAnchor, constant: 20),
             countryFlag.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -15)
         ])
+        
         addSubview(countryName)
         NSLayoutConstraint.activate([
             countryName.topAnchor.constraint(equalTo: topAnchor, constant: 15),

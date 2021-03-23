@@ -8,8 +8,11 @@
 import Foundation
 import UIKit
 import SVGKit
+import WebKit
 
 class CountryDetailView: UIViewController {
+    
+    var svgURL: String!
     
     var countryName: UILabel = {
         let label = UILabel()
@@ -21,14 +24,30 @@ class CountryDetailView: UIViewController {
         return label
     }()
     
-    var countryFlag: CustomSVGView = {
-        let imageView = CustomSVGView()
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.clipsToBounds = true
-        imageView.contentMode = .scaleAspectFill
-        imageView.layer.borderWidth = 1
-        imageView.layer.borderColor = UIColor.gray.cgColor
-        return imageView
+//    var countryFlag: UIImageView = {
+//        let imageView = UIImageView()
+//        imageView.translatesAutoresizingMaskIntoConstraints = false
+//        imageView.clipsToBounds = true
+//        imageView.contentMode = .scaleAspectFill
+//        imageView.layer.borderWidth = 1
+//        imageView.layer.borderColor = UIColor.gray.cgColor
+//        return imageView
+//    }()
+    
+   lazy var countryFlag: WKWebView = {
+        let preferences = WKPreferences()
+        preferences.javaScriptEnabled = false
+        let configuration = WKWebViewConfiguration()
+        configuration.preferences = preferences
+        let wv = WKWebView(frame: .zero, configuration: configuration)
+        let url = URL(string: svgURL)!
+        let request = URLRequest(url: url)
+        wv.load(request)
+        wv.translatesAutoresizingMaskIntoConstraints = false
+        wv.clipsToBounds = true
+        wv.scrollView.isScrollEnabled = false
+        wv.isUserInteractionEnabled = false
+        return wv
     }()
     
     var capitalVal: String!
